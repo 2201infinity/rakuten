@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { FC } from "react";
 import Avatar from "components/Avatar";
 import styled from "styled-components";
 import colors from "styles/colors";
 import axios from "axios";
+import { ILink } from "types/link";
 
 const LinkPage: FC = () => {
+  const [linkData, setLinkData] = useState<ILink[]>();
   const getData = async function () {
     const response = await axios.get("homeworks/links");
-    console.log(response);
-    return response;
+    setLinkData(response.data);
   };
-  getData();
+
+  useEffect(() => {
+    console.log(linkData);
+  }, [linkData]);
+
   return (
     <>
       <Title>마이 링크</Title>
