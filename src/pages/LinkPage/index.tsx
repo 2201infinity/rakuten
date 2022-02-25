@@ -8,7 +8,7 @@ import { ILink } from "types/link";
 import { dateConvert, getDateGap } from "utils/data";
 import { getFileSize } from "utils/getFileSize";
 
-const today = 1643073272;
+const today = 1641890000;
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
   const getData = async function () {
@@ -260,5 +260,7 @@ const LinkReceivers = styled.div`
   }
 `;
 
-const DateInfo = styled.h4``;
-const Tmp = styled.h4``;
+const DateInfo = styled.h4`
+  color: ${colors.grey600};
+  margin-top: 20px;
+`;

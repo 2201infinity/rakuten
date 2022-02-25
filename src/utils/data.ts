@@ -1,5 +1,6 @@
 export const dateConvert = (x: number) => {
   const tmp = new Date(x * 1000);
+  console.log("tmp: ", tmp);
   return (
     tmp.getFullYear().toString().padStart(4, "0") +
     "-" +
@@ -18,16 +19,12 @@ export const dateConvert = (x: number) => {
 
 export const getDateGap = (expirationDate: number, today: number) => {
   const dateGap = (expirationDate - today) * 1000;
-  const gap = new Date(dateGap);
-
   if (dateGap < 60000) {
     return "만료됨";
   } else if (dateGap < 172800000) {
-    // 48시간 미만
-    return (
-      (gap.getHours() - 9 > 0 ? +gap.getHours() - 9 + "시간 " : "") +
-      (gap.getMinutes() > 0 ? +gap.getMinutes() + "분" : "")
-    );
+    const hour = Math.floor(dateGap / 1000 / 60 / 60) + "시간";
+    const minute = Math.floor((dateGap / 1000 / 60) % 60) + "분";
+    return hour + minute;
   } else {
     // 48시간 이상
     return Math.floor(dateGap / 1000 / 60 / 60 / 24) + "일";
