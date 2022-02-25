@@ -5,16 +5,23 @@ import styled from "styled-components";
 import colors from "styles/colors";
 import axios from "axios";
 import { ILink } from "types/link";
+import { useNavigate } from "react-router-dom";
 
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
-  const getData = async function () {
-    const response = await axios.get("homeworks/links");
-    setLinkData(response.data);
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(linkData);
+    const getData = async function () {
+      const response = await axios.get("homeworks/links");
+      setLinkData(response.data);
+    };
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    console.log("linkData", linkData);
   }, [linkData]);
 
   return (
@@ -31,7 +38,7 @@ const LinkPage: FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
+          <TableRow onClick={() => navigate("/detail/7725NJHW")}>
             <TableCell>
               <LinkInfo>
                 <LinkImage>
@@ -67,7 +74,7 @@ const LinkPage: FC = () => {
               </LinkReceivers>
             </TableCell>
           </TableRow>
-          <TableRow>
+          <TableRow onClick={() => navigate("/detail/697DINCR")}>
             <TableCell>
               <LinkInfo>
                 <LinkImage>
