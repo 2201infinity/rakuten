@@ -10,7 +10,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 const Avatar = ({ text, ...rest }: Props) => {
   return (
     <Base {...rest}>
-      <Text data-text={text}>{text.substring(0, 1)}</Text>
+      {text && <Text data-text={text}>{text.substring(0, 1)}</Text>}
     </Base>
   );
 };
