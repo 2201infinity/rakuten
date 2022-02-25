@@ -24,7 +24,7 @@ const LinkPage: FC = () => {
   }, [linkData]);
 
   const onClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log(e);
+    alert(`${e.target}주소가 복사 되었습니다.`);
   };
   const wrongPath =
     "https://storage-fe.fastraffic.io/homeworks/thumbnails/static/pdf.svg";
@@ -60,8 +60,12 @@ const LinkPage: FC = () => {
                   </LinkImage>
                   <LinkTexts>
                     <LinkTitle>{item.summary}</LinkTitle>
-                    <LinkUrl onClick={onClickLink}>
-                      {item.expires_at >= today ? "전체 경로 표시" : "만료됨"}
+                    <LinkUrl
+                      onClick={(e) => {
+                        item.expires_at > today ? onClickLink(e) : null;
+                      }}
+                    >
+                      {item.expires_at > today ? "전체 경로 표시" : "만료됨"}
                     </LinkUrl>
                   </LinkTexts>
                 </LinkInfo>
