@@ -23,6 +23,11 @@ const LinkPage: FC = () => {
     console.log(linkData);
   }, [linkData]);
 
+  const onClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log(e);
+  };
+  const wrongPath =
+    "https://storage-fe.fastraffic.io/homeworks/thumbnails/static/pdf.svg";
   return (
     <>
       <Title>마이 링크</Title>
@@ -46,16 +51,16 @@ const LinkPage: FC = () => {
                     <img
                       referrerPolicy="no-referrer"
                       src={
-                        item.thumbnailUrl
+                        item.thumbnailUrl && item.thumbnailUrl !== wrongPath
                           ? item.thumbnailUrl
-                          : "/svgs/adefltu.svg"
+                          : "/svgs/default.svg"
                       }
                       alt=""
                     />
                   </LinkImage>
                   <LinkTexts>
                     <LinkTitle>{item.summary}</LinkTitle>
-                    <LinkUrl>
+                    <LinkUrl onClick={onClickLink}>
                       {item.expires_at >= today ? "전체 경로 표시" : "만료됨"}
                     </LinkUrl>
                   </LinkTexts>
@@ -72,8 +77,6 @@ const LinkPage: FC = () => {
               </TableCell>
               <TableCell>
                 <span>유효기간</span>
-                <span>{dateConvert(item.expires_at)}</span>
-                <br />
                 <span>{getDateGap(item.expires_at, today)}</span>
               </TableCell>
               <TableCell>
