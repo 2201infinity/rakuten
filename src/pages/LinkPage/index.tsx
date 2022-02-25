@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import type { FC } from "react";
 import Avatar from "components/Avatar";
 import styled from "styled-components";
@@ -6,11 +6,25 @@ import colors from "styles/colors";
 import axios from "axios";
 import { ILink } from "types/link";
 import { useNavigate } from "react-router-dom";
+import { dateConvert, getDateGap } from "utils/data";
 import { getFileSize } from "utils/getFileSize";
 
+const today = 1643073272;
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
   const navigate = useNavigate();
+
+  const onCopy = (e: React.MouseEvent<HTMLInputElement>, url: string) => {
+    navigator.clipboard.writeText(url);
+    alert(`${url} 주소가 복사 되었습니다.`);
+  };
+
+  const wrongImagePath =
+    "https://storage-fe.fastraffic.io/homeworks/thumbnails/static/pdf.svg";
+
+  const onImageError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = "/svgs/default.svg";
+  };
 
   useEffect(() => {
     const getData = async function () {
@@ -21,18 +35,10 @@ const LinkPage: FC = () => {
     getData();
   }, []);
 
-  useEffect(() => {
-    console.log("linkData", linkData);
-  }, [linkData]);
-
-  const onImageError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = "./svgs/default.svg";
-  };
-
-  // onClick={() => navigate("/detail/7725NJHW")}
   return (
     <>
       <Title>마이 링크</Title>
+      <DateInfo>오늘 날짜 : {dateConvert(today)}</DateInfo>
       <Table>
         <TableHead>
           <TableRow>
@@ -44,160 +50,67 @@ const LinkPage: FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {linkData?.map((data) => {
-            console.log(data);
-            const { thumbnailUrl, count, size, sent, key } = data;
-            return (
-              <TableRow key={size}>
-                <TableCell>
-                  <LinkInfo>
-                    <LinkImage>
-                      <img
-                        referrerPolicy="no-referrer"
-                        src={thumbnailUrl}
-                        onError={onImageError}
-                        alt=""
-                      />
-                    </LinkImage>
-                    <LinkTexts>
-                      <LinkTitle onClick={() => navigate(`${key}`)}>
-                        로고파일
-                      </LinkTitle>
-                      <LinkUrl>localhost/7LF4MDLY</LinkUrl>
-                    </LinkTexts>
-                  </LinkInfo>
-                  <span />
-                </TableCell>
-                <TableCell>
-                  <span>파일개수</span>
-                  <span>{count}</span>
-                </TableCell>
-                <TableCell>
-                  <span>파일사이즈</span>
-                  <span>{getFileSize(size)}</span>
-                </TableCell>
-                <TableCell>
-                  <span>유효기간</span>
-                  <span>48시간 00분</span>
-                </TableCell>
-                <TableCell>
-                  <span>받은사람</span>
-                  <LinkReceivers>
-                    {sent?.emails &&
-                      sent.emails.map((email) => <Avatar text={email} />)}
-                  </LinkReceivers>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-          <TableRow>
-            <TableCell>
-              <LinkInfo>
-                <LinkImage>
-                  <img
-                    referrerPolicy="no-referrer"
-                    src="/svgs/default.svg"
-                    alt=""
-                  />
-                </LinkImage>
-                <LinkTexts>
-                  <LinkTitle>로고파일</LinkTitle>
-                  <LinkUrl>localhost/7LF4MDLY</LinkUrl>
-                </LinkTexts>
-              </LinkInfo>
-              <span />
-            </TableCell>
-            <TableCell>
-              <span>파일개수</span>
-              <span>1</span>
-            </TableCell>
-            <TableCell>
-              <span>파일사이즈</span>
-              <span>10.86KB</span>
-            </TableCell>
-            <TableCell>
-              <span>유효기간</span>
-              <span>48시간 00분</span>
-            </TableCell>
-            <TableCell>
-              <span>받은사람</span>
-              <LinkReceivers>
-                <Avatar text="recruit@estmob.com" />
-              </LinkReceivers>
-            </TableCell>
-          </TableRow>
-          <TableRow onClick={() => navigate("/detail/697DINCR")}>
-            <TableCell>
-              <LinkInfo>
-                <LinkImage>
-                  <img
-                    referrerPolicy="no-referrer"
-                    src="/svgs/default.svg"
-                    alt=""
-                  />
-                </LinkImage>
-                <LinkTexts>
-                  <LinkTitle>로고파일</LinkTitle>
-                  <LinkUrl>localhost/7LF4MDLY</LinkUrl>
-                </LinkTexts>
-              </LinkInfo>
-              <span />
-            </TableCell>
-            <TableCell>
-              <span>파일개수</span>
-              <span>1</span>
-            </TableCell>
-            <TableCell>
-              <span>파일사이즈</span>
-              <span>10.86KB</span>
-            </TableCell>
-            <TableCell>
-              <span>유효기간</span>
-              <span>48시간 00분</span>
-            </TableCell>
-            <TableCell>
-              <span>받은사람</span>
-              <LinkReceivers>
-                <Avatar text="recruit@estmob.com" />
-              </LinkReceivers>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <LinkInfo>
-                <LinkImage>
-                  <img
-                    referrerPolicy="no-referrer"
-                    src="/svgs/default.svg"
-                    alt=""
-                  />
-                </LinkImage>
-                <LinkTexts>
-                  <LinkTitle>로고파일</LinkTitle>
-                  <LinkUrl>localhost/7LF4MDLY</LinkUrl>
-                </LinkTexts>
-              </LinkInfo>
-              <span />
-            </TableCell>
-            <TableCell>
-              <span>파일개수</span>
-              <span>1</span>
-            </TableCell>
-            <TableCell>
-              <span>파일사이즈</span>
-              <span>10.86KB</span>
-            </TableCell>
-            <TableCell>
-              <span>유효기간</span>
-              <span>48시간 00분</span>
-            </TableCell>
-            <TableCell>
-              <span>받은사람</span>
-              <LinkReceivers>
-                <Avatar text="recruit@estmob.com" />
-              </LinkReceivers>
-            </TableCell>
-          </TableRow>
+          {linkData?.map((item: ILink) => (
+            <TableRow key={`table_list_${item.created_at}`}>
+              <TableCell>
+                <LinkInfo>
+                  <LinkImage>
+                    <img
+                      referrerPolicy="no-referrer"
+                      src={
+                        item.thumbnailUrl !== wrongImagePath
+                          ? item.thumbnailUrl
+                          : ""
+                      }
+                      onError={onImageError}
+                      alt=""
+                    />
+                  </LinkImage>
+                  <LinkTexts>
+                    <LinkTitle>{item.summary}</LinkTitle>
+                    <LinkUrl>
+                      <input
+                        type="text"
+                        value={
+                          item.expires_at > today ? "전체 경로 표시" : "만료됨"
+                        }
+                        readOnly
+                        onClick={(e) => {
+                          item.expires_at > today
+                            ? onCopy(e, "전체경로추가하기")
+                            : null;
+                        }}
+                      ></input>
+                    </LinkUrl>
+                  </LinkTexts>
+                </LinkInfo>
+                <span />
+              </TableCell>
+              <TableCell>
+                <span>파일개수</span>
+                <span>{item.count}</span>
+              </TableCell>
+              <TableCell>
+                <span>파일사이즈</span>
+                <span>{getFileSize(item.size)}</span>
+              </TableCell>
+              <TableCell>
+                <span>유효기간</span>
+                <span>확인용 만료 날짜 : {dateConvert(item.expires_at)}</span>
+                <br />
+                <span>{getDateGap(item.expires_at, today)}</span>
+              </TableCell>
+              <TableCell>
+                <span>받은사람</span>
+                <LinkReceivers>
+                  {item.sent?.emails &&
+                    item.sent.emails.map((email) => (
+                      <Avatar text={email} key={`sent_list_${email}`} />
+                    ))}
+                </LinkReceivers>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </>
@@ -212,7 +125,6 @@ const Title = styled.h2`
   word-break: keep-all;
   margin: 0;
 `;
-
 const Table = styled.table`
   margin-top: 24px;
   margin-bottom: 102px;
@@ -350,3 +262,6 @@ const LinkReceivers = styled.div`
     margin-left: 8px;
   }
 `;
+
+const DateInfo = styled.h4``;
+const Tmp = styled.h4``;
