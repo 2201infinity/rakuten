@@ -1,4 +1,4 @@
 export enum Path {
   Home = "/",
-  Detail = "/detail/:key",
+  Detail = "/:key",
 }
