@@ -5,7 +5,7 @@ export interface ILink {
   expires_at: number;
   files: IFile[];
   key: string;
-  sent: ISent;
+  sent?: ISent;
   size: number;
   summary: string;
   thumbnailUrl: string;
