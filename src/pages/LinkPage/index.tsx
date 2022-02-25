@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from "react";
 import type { FC } from "react";
 import Avatar from "components/Avatar";
 import styled from "styled-components";
 import colors from "styles/colors";
 import axios from "axios";
 import { ILink } from "types/link";
+import { getFileSize } from "utils/getFileSize";
 
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
@@ -14,9 +19,12 @@ const LinkPage: FC = () => {
   };
 
   useEffect(() => {
-    console.log(linkData);
-  }, [linkData]);
+    getData();
+  }, []);
 
+  const onImageError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = "./svgs/default.svg";
+  };
   return (
     <>
       <Title>마이 링크</Title>
@@ -31,6 +39,50 @@ const LinkPage: FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {linkData?.map((data) => {
+            console.log(data);
+            const { thumbnailUrl, count, size, sent } = data;
+            return (
+              <TableRow key={size}>
+                <TableCell>
+                  <LinkInfo>
+                    <LinkImage>
+                      <img
+                        referrerPolicy="no-referrer"
+                        src={thumbnailUrl}
+                        onError={onImageError}
+                        alt=""
+                      />
+                    </LinkImage>
+                    <LinkTexts>
+                      <LinkTitle>로고파일</LinkTitle>
+                      <LinkUrl>localhost/7LF4MDLY</LinkUrl>
+                    </LinkTexts>
+                  </LinkInfo>
+                  <span />
+                </TableCell>
+                <TableCell>
+                  <span>파일개수</span>
+                  <span>{count}</span>
+                </TableCell>
+                <TableCell>
+                  <span>파일사이즈</span>
+                  <span>{getFileSize(size)}</span>
+                </TableCell>
+                <TableCell>
+                  <span>유효기간</span>
+                  <span>48시간 00분</span>
+                </TableCell>
+                <TableCell>
+                  <span>받은사람</span>
+                  <LinkReceivers>
+                    {sent?.emails &&
+                      sent.emails.map((email) => <Avatar text={email} />)}
+                  </LinkReceivers>
+                </TableCell>
+              </TableRow>
+            );
+          })}
           <TableRow>
             <TableCell>
               <LinkInfo>
