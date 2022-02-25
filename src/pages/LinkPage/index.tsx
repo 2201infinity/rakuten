@@ -8,13 +8,14 @@ import { ILink } from "types/link";
 import { useNavigate } from "react-router-dom";
 import { dateConvert, getDateGap } from "utils/data";
 import { getFileSize } from "utils/getFileSize";
+import { baseUrl } from "utils/constants";
 
 const today = 1641890000;
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
   const navigate = useNavigate();
 
-  const onCopy = (e: React.MouseEvent<HTMLInputElement>, url: string) => {
+  const onCopy = (url: string) => {
     navigator.clipboard.writeText(url);
     alert(`${url} 주소가 복사 되었습니다.`);
   };
@@ -38,7 +39,7 @@ const LinkPage: FC = () => {
   return (
     <>
       <Title>마이 링크</Title>
-      <DateInfo>오늘 날짜 : {dateConvert(today)}</DateInfo>
+      <DateInfo>기준 날짜 : {dateConvert(today)}</DateInfo>
       <Table>
         <TableHead>
           <TableRow>
@@ -71,18 +72,20 @@ const LinkPage: FC = () => {
                       {item.summary}
                     </LinkTitle>
                     <LinkUrl>
-                      <input
+                      <PathInfo
                         type="text"
                         value={
-                          item.expires_at > today ? "전체 경로 표시" : "만료됨"
+                          item.expires_at > today
+                            ? baseUrl + item.key
+                            : "만료됨"
                         }
                         readOnly
-                        onClick={(e) => {
+                        onClick={() => {
                           item.expires_at > today
-                            ? onCopy(e, "전체경로추가하기")
-                            : null;
+                            ? onCopy(baseUrl + item.key)
+                            : "";
                         }}
-                      ></input>
+                      />
                     </LinkUrl>
                   </LinkTexts>
                 </LinkInfo>
@@ -268,4 +271,11 @@ const LinkReceivers = styled.div`
 const DateInfo = styled.h4`
   color: ${colors.grey600};
   margin-top: 20px;
+`;
+
+const PathInfo = styled.input`
+  border: none;
+  width: 250px;
+  cursor: pointer;
+  padding: 0;
 `;
