@@ -67,7 +67,9 @@ const LinkPage: FC = () => {
                     />
                   </LinkImage>
                   <LinkTexts>
-                    <LinkTitle>{item.summary}</LinkTitle>
+                    <LinkTitle onClick={() => navigate(`${item.key}`)}>
+                      {item.summary}
+                    </LinkTitle>
                     <LinkUrl>
                       <input
                         type="text"
