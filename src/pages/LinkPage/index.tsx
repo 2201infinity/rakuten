@@ -5,16 +5,14 @@ import styled from "styled-components";
 import colors from "styles/colors";
 import axios from "axios";
 import { ILink } from "types/link";
+import { useNavigate } from "react-router-dom";
 import { dateConvert, getDateGap } from "utils/data";
 import { getFileSize } from "utils/getFileSize";
 
 const today = 1643073272;
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
-  const getData = async function () {
-    const response = await axios.get("homeworks/links");
-    setLinkData(response.data);
-  };
+  const navigate = useNavigate();
 
   const onCopy = (e: React.MouseEvent<HTMLInputElement>, url: string) => {
     navigator.clipboard.writeText(url);
@@ -29,6 +27,11 @@ const LinkPage: FC = () => {
   };
 
   useEffect(() => {
+    const getData = async function () {
+      const response = await axios.get("homeworks/links");
+      setLinkData(response.data);
+    };
+
     getData();
   }, []);
 
@@ -64,7 +67,9 @@ const LinkPage: FC = () => {
                     />
                   </LinkImage>
                   <LinkTexts>
-                    <LinkTitle>{item.summary}</LinkTitle>
+                    <LinkTitle onClick={() => navigate(`${item.key}`)}>
+                      {item.summary}
+                    </LinkTitle>
                     <LinkUrl>
                       <input
                         type="text"
