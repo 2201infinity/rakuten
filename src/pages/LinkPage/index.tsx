@@ -5,7 +5,9 @@ import styled from "styled-components";
 import colors from "styles/colors";
 import axios from "axios";
 import { ILink } from "types/link";
+import { dateConvert, getDateGap } from "utils/data";
 
+const today = 1644073272;
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
   const getData = async function () {
@@ -14,12 +16,77 @@ const LinkPage: FC = () => {
   };
 
   useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
     console.log(linkData);
   }, [linkData]);
 
   return (
     <>
       <Title>마이 링크</Title>
+      <DateInfo>오늘 날짜 : {dateConvert(today)}</DateInfo>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>제목</TableCell>
+            <TableCell>파일개수</TableCell>
+            <TableCell>크기</TableCell>
+            <TableCell>유효기간</TableCell>
+            <TableCell>받은사람</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {linkData?.map((item: ILink) => (
+            <TableRow key={`table_list_${item.created_at}`}>
+              <TableCell>
+                <LinkInfo>
+                  <LinkImage>
+                    <img
+                      referrerPolicy="no-referrer"
+                      src={
+                        item.thumbnailUrl
+                          ? item.thumbnailUrl
+                          : "/svgs/adefltu.svg"
+                      }
+                      alt=""
+                    />
+                  </LinkImage>
+                  <LinkTexts>
+                    <LinkTitle>{item.summary}</LinkTitle>
+                    <LinkUrl>
+                      {item.expires_at >= today ? "전체 경로 표시" : "만료됨"}
+                    </LinkUrl>
+                  </LinkTexts>
+                </LinkInfo>
+                <span />
+              </TableCell>
+              <TableCell>
+                <span>파일개수</span>
+                <span>{item.count}</span>
+              </TableCell>
+              <TableCell>
+                <span>파일사이즈</span>
+                <span>10.86KB</span>
+              </TableCell>
+              <TableCell>
+                <span>유효기간</span>
+                <span>{dateConvert(item.expires_at)}</span>
+                <br />
+                <span>{getDateGap(item.expires_at, today)}</span>
+              </TableCell>
+              <TableCell>
+                <span>받은사람</span>
+                <LinkReceivers>
+                  <Avatar text="recruit@estmob.com" />
+                </LinkReceivers>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
       <Table>
         <TableHead>
           <TableRow>
@@ -153,7 +220,6 @@ const Title = styled.h2`
   word-break: keep-all;
   margin: 0;
 `;
-
 const Table = styled.table`
   margin-top: 24px;
   margin-bottom: 102px;
@@ -291,3 +357,6 @@ const LinkReceivers = styled.div`
     margin-left: 8px;
   }
 `;
+
+const DateInfo = styled.h4``;
+const Tmp = styled.h4``;
