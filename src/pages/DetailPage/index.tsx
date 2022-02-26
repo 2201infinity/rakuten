@@ -6,35 +6,55 @@ import Button from "components/Button";
 import axios from "axios";
 import { ILink } from "types/link";
 import { useParams } from "react-router-dom";
+import { dateConvert } from "utils/data";
+import { getFileSize } from "utils/getFileSize";
+import { today, baseUrl, API_URL, wrongImagePath } from "utils/constants";
 
 const DetailPage: FC = () => {
-  const { key } = useParams();
+  const { linkKey } = useParams();
   const [linkItem, setLinkItem] = useState<ILink>();
 
   useEffect(() => {
     const getLinkData = async () => {
-      const { data } = await axios.get<ILink[]>("/homeworks/links");
-      setLinkItem(data.filter((data) => data.key === key)[0]);
+      const { data } = await axios.get<ILink[]>(API_URL);
+      setLinkItem(data.filter((data) => data.key === linkKey)[0]);
     };
-    if (key) getLinkData();
-  }, [key]);
+    if (linkKey) getLinkData();
+  }, [linkKey]);
 
   const handleAlert = () => {
     alert("다운로드되었습니다.");
   };
 
+  if (!linkItem) return null;
+
+  const {
+    count,
+    created_at,
+    expires_at,
+    download_count,
+    thumbnailUrl,
+    files,
+    key,
+    sent,
+    size,
+    summary,
+  }: ILink = linkItem;
+
+  const isWrongImg = (url: string) => url === wrongImagePath;
+
   return (
     <>
       <Header>
         <LinkInfo>
-          <Title>로고파일</Title>
-          <Url>localhost/7LF4MDLY</Url>
+          <Title>{summary}</Title>
+          <Url>{baseUrl + key}</Url>
         </LinkInfo>
         <DownloadButton>
           <img
             referrerPolicy="no-referrer"
             src="/svgs/download.svg"
-            alt=""
+            alt="download-button"
             onClick={handleAlert}
           />
           받기
@@ -44,29 +64,35 @@ const DetailPage: FC = () => {
         <Descrition>
           <Texts>
             <Top>링크 생성일</Top>
-            <Bottom>{linkItem?.created_at}</Bottom>
+            <Bottom>{dateConvert(created_at)}</Bottom>
             <Top>메세지</Top>
-            <Bottom>로고파일 전달 드립니다.</Bottom>
+            <Bottom>{sent?.content}</Bottom>
             <Top>다운로드 횟수</Top>
-            <Bottom>{linkItem?.download_count}</Bottom>
+            <Bottom>{download_count}</Bottom>
           </Texts>
           <LinkImage>
-            <Image />
+            <Image isWrongImg={isWrongImg(thumbnailUrl)} />
           </LinkImage>
         </Descrition>
         <ListSummary>
-          <div>총 {linkItem?.count}개의 파일</div>
-          <div>10.86KB</div>
+          <div>총 {count}개의 파일</div>
+          <div>{getFileSize(size)}</div>
         </ListSummary>
-        <FileList>
-          <FileListItem>
-            <FileItemInfo>
-              <span />
-              <span>logo.png</span>
-            </FileItemInfo>
-            <FileItemSize>10.86KB</FileItemSize>
-          </FileListItem>
-        </FileList>
+        {expires_at > today ? (
+          <FileList>
+            {files.map(({ name, size }) => (
+              <FileListItem key={name}>
+                <FileItemInfo>
+                  <span />
+                  <span>{name}</span>
+                </FileItemInfo>
+                <FileItemSize>{getFileSize(size)}</FileItemSize>
+              </FileListItem>
+            ))}
+          </FileList>
+        ) : (
+          ""
+        )}
       </Article>
     </>
   );
@@ -177,10 +203,11 @@ const LinkImage = styled.div`
   }
 `;
 
-const Image = styled.span`
+const Image = styled.span<{ isWrongImg: boolean }>`
   width: 120px;
   display: inline-block;
-  background-image: url(/svgs/default.svg);
+  background-image: ${(props) =>
+    props.isWrongImg ? "url(/svgs/default.svg)" : "url(`${thumbnailUrl}`)"};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
