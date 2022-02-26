@@ -8,9 +8,8 @@ import { ILink } from "types/link";
 import { useNavigate } from "react-router-dom";
 import { dateConvert, getDateGap } from "utils/data";
 import { getFileSize } from "utils/getFileSize";
-import { baseUrl } from "utils/constants";
+import { today, baseUrl, API_URL, wrongImagePath } from "utils/constants";
 
-const today = 1641890000;
 const LinkPage: FC = () => {
   const [linkData, setLinkData] = useState<ILink[]>();
   const navigate = useNavigate();
@@ -20,16 +19,13 @@ const LinkPage: FC = () => {
     alert(`${url} 주소가 복사 되었습니다.`);
   };
 
-  const wrongImagePath =
-    "https://storage-fe.fastraffic.io/homeworks/thumbnails/static/pdf.svg";
-
   const onImageError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = "/svgs/default.svg";
   };
 
   useEffect(() => {
     const getData = async function () {
-      const response = await axios.get("homeworks/links");
+      const response = await axios.get(API_URL);
       setLinkData(response.data);
     };
 
