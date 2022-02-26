@@ -71,7 +71,10 @@ const DetailPage: FC = () => {
             <Bottom>{download_count}</Bottom>
           </Texts>
           <LinkImage>
-            <Image isWrongImg={isWrongImg(thumbnailUrl)} />
+            <Image
+              isWrongImg={isWrongImg(thumbnailUrl)}
+              thumbnailUrl={thumbnailUrl}
+            />
           </LinkImage>
         </Descrition>
         <ListSummary>
@@ -203,11 +206,11 @@ const LinkImage = styled.div`
   }
 `;
 
-const Image = styled.span<{ isWrongImg: boolean }>`
+const Image = styled.span<{ isWrongImg: boolean; thumbnailUrl?: string }>`
   width: 120px;
   display: inline-block;
   background-image: ${(props) =>
-    props.isWrongImg ? "url(/svgs/default.svg)" : "url(`${thumbnailUrl}`)"};
+    props.isWrongImg ? "url(/svgs/default.svg)" : `url(${props.thumbnailUrl})`};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
