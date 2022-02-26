@@ -1,4 +1,5 @@
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/proxy/*"
+  to = "/index.html:splat"
   status = 200
+  force = true
